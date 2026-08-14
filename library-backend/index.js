@@ -117,74 +117,81 @@ type Mutation {
   ): Author
 }
 `
-
 const resolvers = {
- Query: {
-  bookCount: () => books.length,
-  authorCount: () => authors.length,
- allBooks: (root, args) => {
-  let filteredBooks = books
+  Query: {
+    bookCount: () => books.length,
+    authorCount: () => authors.length,
 
-  if (args.author) {
-    filteredBooks = filteredBooks.filter(
-      book => book.author === args.author
-    )
-  }
+    allBooks: (root, args) => {
+      let filteredBooks = books
 
-  if (args.genre) {
-    filteredBooks = filteredBooks.filter(
-      book => book.genres.includes(args.genre)
-    )
-  }
+      if (args.author) {
+        filteredBooks = filteredBooks.filter(
+          book => book.author === args.author
+        )
+      }
 
-  return filteredBooks
-},
-  allAuthors: () => authors,
-},
+      if (args.genre) {
+        filteredBooks = filteredBooks.filter(
+          book => book.genres.includes(args.genre)
+        )
+      }
 
+      return filteredBooks
+    },
 
-Mutation: {
-  addBook: (root, args) => {
-    const authorExists = authors.find(
-      author => author.name === args.author
-    )
-
-    if (!authorExists) {
-      authors.push({
-        name: args.author,
-        id: crypto.randomUUID(),
-      })
-    }
-
-    const book = {
-      title: args.title,
-      author: args.author,
-      published: args.published,
-      genres: args.genres,
-      id: crypto.randomUUID(),
-    }
-
-    books.push(book)
-
-    return book
+    allAuthors: () => authors,
   },
 
-  editAuthor: (root, args) => {
-  const author = authors.find(
-    author => author.name === args.name
-  )
+  Mutation: {
+    addBook: (root, args) => {
+      const authorExists = authors.find(
+        author => author.name === args.author
+      )
 
-  if (!author) {
-    return null
-  }
+      if (!authorExists) {
+        authors.push({
+          name: args.author,
+          id: crypto.randomUUID(),
+        })
+      }
 
-  author.born = args.setBornTo
+      const book = {
+        title: args.title,
+        author: args.author,
+        published: args.published,
+        genres: args.genres,
+        id: crypto.randomUUID(),
+      }
 
-  return author
-},
-},
+      books.push(book)
+
+      return book
+    },
+
+    editAuthor: (root, args) => {
+      const author = authors.find(
+        author => author.name === args.name
+      )
+
+      if (!author) {
+        return null
+      }
+
+      author.born = args.setBornTo
+
+      return author
+    },
+  },
+
+  Author: {
+    bookCount: (root) => {
+      return books.filter(
+        book => book.author === root.name
+      ).length
+    },
+  },
 }
-
 
 
 
