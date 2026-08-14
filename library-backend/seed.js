@@ -58,9 +58,7 @@ const books = [
 ]
 
 const seed = async () => {
-  await mongoose.connect(process.env.MONGODB_URI)
-
-  console.log('Connected to MongoDB')
+  await mongoose.connect('mongodb+srv://Gilbert_db_user:melvin2000@cluster1.2arnqyw.mongodb.net/?appName=Cluster1')
 
   await Author.deleteMany({})
   await Book.deleteMany({})
@@ -68,8 +66,8 @@ const seed = async () => {
   const savedAuthors = {}
 
   for (const author of authors) {
-    const savedAuthor = await new Author(author).save()
-    savedAuthors[savedAuthor.name] = savedAuthor
+    const saved = await new Author(author).save()
+    savedAuthors[saved.name] = saved
   }
 
   for (const book of books) {

@@ -1,13 +1,12 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
-import 'dotenv/config'
 import mongoose from 'mongoose'
+import 'dotenv/config'
 
 import Author from './models/Author.js'
 import Book from './models/book.js'
 
 const MONGODB_URI = 'mongodb+srv://Gilbert_db_user:melvin2000@cluster1.2arnqyw.mongodb.net/?appName=Cluster1'
-
 mongoose.set('strictQuery', false)
 
 mongoose
@@ -59,18 +58,38 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    bookCount: async () =>
-      Book.collection.countDocuments(),
+    bookCount: async () => {
+      return Book.collection.countDocuments()
+    },
 
-    authorCount: async () =>
-      Author.collection.countDocuments(),
-
-    allBooks: async () => {
-      return Book.find({}).populate('author')
+    authorCount: async () => {
+      return Author.collection.countDocuments()
     },
 
     allAuthors: async () => {
       return Author.find({})
+    },
+
+    allBooks: async (root, args) => {
+      const filter = {}
+
+      if (args.genre) {
+        filter.genres = args.genre
+      }
+
+      if (args.author) {
+        const author = await Author.findOne({
+          name: args.author,
+        })
+
+        if (!author) {
+          return []
+        }
+
+        filter.author = author._id
+      }
+
+      return Book.find(filter).populate('author')
     },
   },
 
@@ -81,11 +100,9 @@ const resolvers = {
       })
 
       if (!author) {
-        author = new Author({
+        author = await new Author({
           name: args.author,
-        })
-
-        await author.save()
+        }).save()
       }
 
       const book = new Book({
@@ -95,20 +112,29 @@ const resolvers = {
         author: author._id,
       })
 
-      await book.save()
-
-      return await book.populate('author')
+      return book.save()
     },
 
     editAuthor: async (root, args) => {
-      const author = await Author.findOne({ name: args.name })
+      const author = await Author.findOne({
+        name: args.name,
+      })
+
       if (!author) {
         return null
       }
 
       author.born = args.setBornTo
-      await author.save()
-      return author
+
+      return author.save()
+    },
+  },
+
+  Author: {
+    bookCount: async (root) => {
+      return Book.countDocuments({
+        author: root._id,
+      })
     },
   },
 }
