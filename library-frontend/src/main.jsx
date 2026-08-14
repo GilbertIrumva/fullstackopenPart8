@@ -4,12 +4,15 @@ import App from './App.jsx'
 
 import {
   ApolloClient,
+  ApolloProvider,
   InMemoryCache,
-  ApolloProvider
+  HttpLink,
 } from '@apollo/client'
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000',
+  link: new HttpLink({
+    uri: 'http://localhost:4000',
+  }),
   cache: new InMemoryCache(),
 })
 
