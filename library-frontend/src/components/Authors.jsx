@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
@@ -7,6 +7,14 @@ const Authors = (props) => {
   const [born, setBorn] = useState('')
 
   const result = useQuery(ALL_AUTHORS)
+  const authors = result.data?.allAuthors || []
+
+
+  useEffect(() => {
+  if (authors.length > 0 && !name) {
+    setName(authors[0].name)
+  }
+}, [authors, name])
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -20,7 +28,7 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
 
-  const authors = result.data.allAuthors
+  // const authors = result.data.allAuthors
 
   const submit = async (event) => {
     event.preventDefault()
@@ -32,7 +40,6 @@ const Authors = (props) => {
       },
     })
 
-    setName('')
     setBorn('')
   }
 
@@ -60,36 +67,34 @@ const Authors = (props) => {
 
       <h3>set birthyear</h3>
 
-      <form onSubmit={submit}>
-        <select
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-        >
-          <option value="">select author</option>
+<form onSubmit={submit}>
+  <select
+    value={name}
+    onChange={({ target }) => setName(target.value)}
+  >
+    {authors.map((author) => (
+      <option
+        key={author.name}
+        value={author.name}
+      >
+        {author.name}
+      </option>
+    ))}
+  </select>
 
-          {authors.map((author) => (
-            <option
-              key={author.name}
-              value={author.name}
-            >
-              {author.name}
-            </option>
-          ))}
-        </select>
+  <div>
+    born
+    <input
+      type="number"
+      value={born}
+      onChange={({ target }) => setBorn(target.value)}
+    />
+  </div>
 
-        <div>
-          born
-          <input
-            type="number"
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-
-        <button type="submit">
-          update author
-        </button>
-      </form>
+  <button type="submit">
+    update author
+  </button>
+</form>
     </div>
   )
 }
