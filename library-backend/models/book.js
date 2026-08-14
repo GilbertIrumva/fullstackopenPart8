@@ -1,7 +1,12 @@
 import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    required: true,
+    minlength: 5,
+  },
+
   published: Number,
 
   author: {
