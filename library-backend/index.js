@@ -1,5 +1,6 @@
-const { ApolloServer } = require("@apollo/server")
-const { startStandaloneServer } = require("@apollo/server/standalone")
+import { ApolloServer } from '@apollo/server'
+import { startStandaloneServer } from '@apollo/server/standalone'
+import crypto from 'node:crypto'
 
 let authors = [
   {
@@ -101,6 +102,15 @@ type Query {
   allBooks(author: String, genre: String): [Book!]!
   allAuthors: [Author!]!
 }
+
+type Mutation {
+  addBook(
+    title: String!
+    author: String!
+    published: Int!
+    genres: [String!]!
+  ): Book!
+}
 `
 
 const resolvers = {
@@ -126,7 +136,42 @@ const resolvers = {
 },
   allAuthors: () => authors,
 },
+
+
+Mutation: {
+  addBook: (root, args) => {
+    const authorExists = authors.find(
+      author => author.name === args.author
+    )
+
+    if (!authorExists) {
+      authors.push({
+        name: args.author,
+        id: crypto.randomUUID(),
+      })
+    }
+
+    const book = {
+      title: args.title,
+      author: args.author,
+      published: args.published,
+      genres: args.genres,
+      id: crypto.randomUUID(),
+    }
+
+    books.push(book)
+
+    return book
+  },
+},
 }
+
+
+
+
+
+
+
 
 const server = new ApolloServer({
   typeDefs,
