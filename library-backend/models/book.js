@@ -1,20 +1,27 @@
-import mongoose from 'mongoose'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+
+const bookSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
     minlength: 5,
+    required: true,
+    unique: true,
   },
-
-  published: Number,
-
+  published: {
+    type: Number,
+    required: true,
+  },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Author',
+    required: true,
   },
-
-  genres: [String],
+  genres: {
+    type: [String],
+    required: true,
+  },
 })
 
-export default mongoose.model('Book', schema)
+module.exports = mongoose.model('Book', bookSchema)
+

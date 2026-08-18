@@ -1,12 +1,16 @@
-import mongoose from 'mongoose'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+
+const authorSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     minlength: 4,
+    required: true,
   },
-  born: Number,
+  born: {
+    type: Number,
+  },
 })
 
-export default mongoose.model('Author', schema)
+module.exports = mongoose.model('Author', authorSchema)
+
