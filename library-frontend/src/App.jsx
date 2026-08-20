@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -12,6 +13,7 @@ const App = ({ initialToken }) => {
   const logout = () => {
     setToken(null)
     localStorage.removeItem('library-user-token')
+    setPage('authors')
   }
 
   return (
@@ -50,21 +52,26 @@ const App = ({ initialToken }) => {
 
       <Authors
         show={page === 'authors'}
-        token={token}
+        loggedIn={!!token}
       />
 
-      <Books show={page === 'books'} />
+      <Books
+        show={page === 'books'}
+      />
 
-      <NewBook show={page === 'add' && token} />
+      <NewBook
+        show={page === 'add' && token}
+      />
 
       <LoginForm
         show={page === 'login'}
         setToken={setToken}
+        setPage={setPage}
       />
 
-      <Recommended
-        show={page === 'recommended' && token}
-      />
+     <Recommended
+  show={page === 'recommended'}
+/>
     </div>
   )
 }

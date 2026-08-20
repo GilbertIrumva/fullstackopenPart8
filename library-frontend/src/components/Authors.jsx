@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
+
 import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
 const Authors = (props) => {
@@ -7,6 +8,7 @@ const Authors = (props) => {
   const [born, setBorn] = useState('')
 
   const result = useQuery(ALL_AUTHORS)
+
   const authors = result.data?.allAuthors || []
 
   useEffect(() => {
@@ -52,11 +54,11 @@ const Authors = (props) => {
             <th>books</th>
           </tr>
 
-          {authors.map((a) => (
-            <tr key={a.name}>
-              <td>{a.name}</td>
-              <td>{a.born}</td>
-              <td>{a.bookCount}</td>
+          {authors.map((author) => (
+            <tr key={author.name}>
+              <td>{author.name}</td>
+              <td>{author.born}</td>
+              <td>{author.bookCount}</td>
             </tr>
           ))}
         </tbody>
@@ -64,26 +66,39 @@ const Authors = (props) => {
 
       {props.loggedIn && (
         <>
-          <h3>set birthyear</h3>
+          <h2>Set birthyear</h2>
 
           <form onSubmit={submit}>
-            <select
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-            >
-              {authors.map((author) => (
-                <option
-                  key={author.name}
-                  value={author.name}
-                >
-                  {author.name}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label htmlFor="author-name">
+                name
+              </label>
+
+              <select
+                id="author-name"
+                name="name"
+                value={name}
+                onChange={({ target }) => setName(target.value)}
+              >
+                {authors.map((author) => (
+                  <option
+                    key={author.name}
+                    value={author.name}
+                  >
+                    {author.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div>
-              born
+              <label htmlFor="born">
+                born
+              </label>
+
               <input
+                id="born"
+                name="born"
                 type="number"
                 value={born}
                 onChange={({ target }) => setBorn(target.value)}
