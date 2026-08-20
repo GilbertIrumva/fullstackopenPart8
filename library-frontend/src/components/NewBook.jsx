@@ -11,8 +11,15 @@ const NewBook = (props) => {
 
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [
-      { query: ALL_BOOKS },
-      { query: ALL_AUTHORS },
+      {
+        query: ALL_BOOKS,
+        variables: {
+          genre: null,
+        },
+      },
+      {
+        query: ALL_AUTHORS,
+      },
     ],
   })
 
@@ -40,6 +47,10 @@ const NewBook = (props) => {
   }
 
   const addGenre = () => {
+    if (!genre) {
+      return
+    }
+
     setGenres(genres.concat(genre))
     setGenre('')
   }
@@ -89,14 +100,21 @@ const NewBook = (props) => {
             />
           </label>
 
-          <button type="button" onClick={addGenre}>
+          <button
+            type="button"
+            onClick={addGenre}
+          >
             add genre
           </button>
         </div>
 
-        <div>genres: {genres.join(' ')}</div>
+        <div>
+          genres: {genres.join(' ')}
+        </div>
 
-        <button type="submit">create book</button>
+        <button type="submit">
+          create book
+        </button>
       </form>
     </div>
   )
