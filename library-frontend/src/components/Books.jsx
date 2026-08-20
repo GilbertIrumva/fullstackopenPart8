@@ -2,10 +2,27 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
+const genres = [
+  'refactoring',
+  'agile',
+  'patterns',
+  'design',
+  'classic',
+  'crime',
+  'revolution',
+  'graphql',
+  'web',
+  'testing',
+]
+
 const Books = (props) => {
   const [genre, setGenre] = useState(null)
 
-  const result = useQuery(ALL_BOOKS)
+  const result = useQuery(ALL_BOOKS, {
+    variables: {
+      genre,
+    },
+  })
 
   if (!props.show) {
     return null
@@ -21,14 +38,6 @@ const Books = (props) => {
 
   const books = result.data.allBooks
 
-  const genres = [
-    ...new Set(books.flatMap((book) => book.genres)),
-  ]
-
-  const filteredBooks = genre
-    ? books.filter((book) => book.genres.includes(genre))
-    : books
-
   return (
     <div>
       <h2>books</h2>
@@ -41,7 +50,7 @@ const Books = (props) => {
             <th>published</th>
           </tr>
 
-          {filteredBooks.map((book) => (
+          {books.map((book) => (
             <tr key={book.id}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
