@@ -1,4 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
+const jwt = require('jsonwebtoken')
+const User = require('./models/user')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const mongoose = require('mongoose')
 require('dotenv').config()

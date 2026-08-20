@@ -9,12 +9,11 @@ const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
   const authors = result.data?.allAuthors || []
 
-
   useEffect(() => {
-  if (authors.length > 0 && !name) {
-    setName(authors[0].name)
-  }
-}, [authors, name])
+    if (authors.length > 0 && !name) {
+      setName(authors[0].name)
+    }
+  }, [authors, name])
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -27,8 +26,6 @@ const Authors = (props) => {
   if (result.loading) {
     return <div>loading...</div>
   }
-
-  // const authors = result.data.allAuthors
 
   const submit = async (event) => {
     event.preventDefault()
@@ -65,36 +62,40 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <h3>set birthyear</h3>
+      {props.loggedIn && (
+        <>
+          <h3>set birthyear</h3>
 
-<form onSubmit={submit}>
-  <select
-    value={name}
-    onChange={({ target }) => setName(target.value)}
-  >
-    {authors.map((author) => (
-      <option
-        key={author.name}
-        value={author.name}
-      >
-        {author.name}
-      </option>
-    ))}
-  </select>
+          <form onSubmit={submit}>
+            <select
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+            >
+              {authors.map((author) => (
+                <option
+                  key={author.name}
+                  value={author.name}
+                >
+                  {author.name}
+                </option>
+              ))}
+            </select>
 
-  <div>
-    born
-    <input
-      type="number"
-      value={born}
-      onChange={({ target }) => setBorn(target.value)}
-    />
-  </div>
+            <div>
+              born
+              <input
+                type="number"
+                value={born}
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
 
-  <button type="submit">
-    update author
-  </button>
-</form>
+            <button type="submit">
+              update author
+            </button>
+          </form>
+        </>
+      )}
     </div>
   )
 }
