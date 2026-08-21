@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import loginForm from './components/loginForm'
+import LoginForm from './components/LoginForm'
 import Recommended from './components/Recommended'
 
 const App = ({ initialToken }) => {
@@ -69,9 +69,10 @@ const App = ({ initialToken }) => {
         setPage={setPage}
       />
 
-     <Recommended
-  show={page === 'recommended'}
-/>
+      <Recommended
+        show={page === 'recommended'}
+        loggedIn={!!token}
+      />
     </div>
   )
 }
