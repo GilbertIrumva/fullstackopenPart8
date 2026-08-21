@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import LoginForm from './components/LoginForm'
+import loginForm from './components/loginForm'
 import Recommended from './components/Recommended'
 
 const App = ({ initialToken }) => {
